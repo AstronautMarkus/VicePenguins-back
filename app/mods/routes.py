@@ -1,6 +1,6 @@
 from flask import jsonify
-from . import api
+from . import mods
 
-@api.route('/hello')
+@mods.route('/hello')
 def hello():
     return jsonify({'message': 'Hello from the API blueprint!'})
