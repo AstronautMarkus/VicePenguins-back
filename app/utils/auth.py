@@ -15,9 +15,14 @@ def role_required(allowed_roles):
                 token = token.split("Bearer ")[-1]
                 decoded_token = jwt.decode(token, Config.SECRET_KEY, algorithms=['HS256'])
 
-                
-                if decoded_token.get('role') not in allowed_roles:
+                if decoded_token.get('role_id') not in allowed_roles:
                     return jsonify({'error': 'Unauthorized access'}), 403
+
+                request.user = {
+                    "user_id": decoded_token.get("user_id"),
+                    "username": decoded_token.get("username"),
+                    "role_id": decoded_token.get("role_id")
+                }
 
                 return f(*args, **kwargs)
             except jwt.ExpiredSignatureError:
@@ -27,3 +32,4 @@ def role_required(allowed_roles):
 
         return decorated_function
     return decorator
+
