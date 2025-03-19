@@ -41,6 +41,15 @@ class MySQLConnection:
         finally:
             cursor.close()  # Ensure the cursor is closed after fetching results
 
+    def commit(self):
+        if self.connection:
+            try:
+                self.connection.commit()
+                print("Transaction committed successfully.")  # Debug message
+            except mysql.connector.Error as err:
+                print(f"Error during commit: {err}")
+                raise
+
     def close(self):
         if self.connection:
             self.connection.close()
