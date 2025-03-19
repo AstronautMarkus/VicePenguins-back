@@ -18,10 +18,9 @@ def login_user():
             return jsonify({'error': 'Email and password are required.'}), 400
 
         query = """
-            SELECT u.id, u.username, u.email, u.password_hash, u.role_id, r.role_name AS role_name
-            FROM users u
-            JOIN roles r ON u.role_id = r.id
-            WHERE u.email = %s
+            SELECT id, username, email, password_hash
+            FROM users
+            WHERE email = %s
         """
         user = db.execute_query(query, (email,))
 
@@ -35,9 +34,6 @@ def login_user():
 
         payload = {
             'user_id': user['id'],
-            'username': user['username'],
-            'role_id': user['role_id'],
-            'role': user['role_name'],  
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=2) 
         }
         token = jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')

@@ -2,6 +2,7 @@ import jwt
 from functools import wraps
 from flask import request, jsonify
 from app.config import Config
+from app.utils.db_connection import MySQLConnection
 
 def role_required(allowed_roles):
     def decorator(f):
@@ -14,14 +15,27 @@ def role_required(allowed_roles):
             try:
                 token = token.split("Bearer ")[-1]
                 decoded_token = jwt.decode(token, Config.SECRET_KEY, algorithms=['HS256'])
+                user_id = decoded_token.get("user_id")
 
-                if decoded_token.get('role_id') not in allowed_roles:
+                if not user_id:
+                    return jsonify({'error': 'Invalid token'}), 401
+
+                db = MySQLConnection()
+                query = "SELECT role_id FROM users WHERE id = %s"
+                user_data = db.execute_query(query, (user_id,))
+                db.close()
+
+                if not user_data:
+                    return jsonify({'error': 'User not found'}), 404
+
+                user_role = user_data[0]['role_id']
+                
+                if user_role not in allowed_roles:
                     return jsonify({'error': 'Unauthorized access'}), 403
 
                 request.user = {
-                    "user_id": decoded_token.get("user_id"),
-                    "username": decoded_token.get("username"),
-                    "role_id": decoded_token.get("role_id")
+                    "user_id": user_id,
+                    "role_id": user_role
                 }
 
                 return f(*args, **kwargs)
@@ -32,4 +46,3 @@ def role_required(allowed_roles):
 
         return decorated_function
     return decorator
-
