@@ -1,7 +1,7 @@
 from flask import Flask
 
-from .main import main as main_blueprint
-from .mods import mods as mods_blueprint
+from .routes.main import main as main_blueprint
+from .routes.mods import mods as mods_blueprint
 
 def create_app():
     app = Flask(__name__)
