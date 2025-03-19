@@ -17,6 +17,7 @@ class MySQLConnection:
                 password=os.getenv("DB_PASSWORD"),
                 database=os.getenv("DB_NAME")
             )
+            print("Database connection established successfully.")  # Debug message
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection = None
@@ -30,13 +31,15 @@ class MySQLConnection:
         cursor = self.connection.cursor(dictionary=True)
         try:
             cursor.execute(query, params)
+            results = cursor.fetchall()  # Fetch all results immediately
             self.connection.commit()
-            return cursor.fetchall()
+            print(f"Query executed successfully: {query}")  # Debug message
+            return results
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return None
         finally:
-            cursor.close()
+            cursor.close()  # Ensure the cursor is closed after fetching results
 
     def close(self):
         if self.connection:
