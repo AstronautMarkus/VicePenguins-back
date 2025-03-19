@@ -17,8 +17,12 @@ def login_user():
         if not email or not password:
             return jsonify({'error': 'Email and password are required.'}), 400
 
-        
-        query = "SELECT id, username, email, password_hash, role_id FROM users WHERE email = %s"
+        query = """
+            SELECT u.id, u.username, u.email, u.password_hash, u.role_id, r.role_name AS role_name
+            FROM users u
+            JOIN roles r ON u.role_id = r.id
+            WHERE u.email = %s
+        """
         user = db.execute_query(query, (email,))
 
         if not user:
@@ -29,11 +33,11 @@ def login_user():
         if not check_password_hash(user['password_hash'], password):
             return jsonify({'error': 'Incorrect password.'}), 401
 
-        
         payload = {
             'user_id': user['id'],
             'username': user['username'],
             'role_id': user['role_id'],
+            'role': user['role_name'],  
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=2) 
         }
         token = jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
