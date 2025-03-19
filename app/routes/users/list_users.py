@@ -1,8 +1,10 @@
 from flask import jsonify
 from . import users
 from app.utils.db_connection import MySQLConnection
+from app.utils.auth import role_required
 
 @users.route('/')
+@role_required([3])
 def list_users():
     db = MySQLConnection()
     try:
