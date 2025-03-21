@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 import mysql.connector
 
-# Load environment variables from .env file
 load_dotenv()
 
 class MySQLConnection:
@@ -17,7 +16,6 @@ class MySQLConnection:
                 password=os.getenv("DB_PASSWORD"),
                 database=os.getenv("DB_NAME")
             )
-            print("Database connection established successfully.")  # Debug message
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             self.connection = None
@@ -31,21 +29,19 @@ class MySQLConnection:
         cursor = self.connection.cursor(dictionary=True)
         try:
             cursor.execute(query, params)
-            results = cursor.fetchall()  # Fetch all results immediately
+            results = cursor.fetchall()
             self.connection.commit()
-            print(f"Query executed successfully: {query}")  # Debug message
             return results
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return None
         finally:
-            cursor.close()  # Ensure the cursor is closed after fetching results
+            cursor.close()
 
     def commit(self):
         if self.connection:
             try:
                 self.connection.commit()
-                print("Transaction committed successfully.")  # Debug message
             except mysql.connector.Error as err:
                 print(f"Error during commit: {err}")
                 raise
