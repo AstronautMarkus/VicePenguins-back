@@ -2,6 +2,7 @@ from flask import jsonify
 from . import stats
 from app.utils.db_connection import MySQLConnection
 from app.utils.auth import role_required
+from datetime import datetime
 
 @stats.route('/', methods=['GET'])
 @role_required([3])
@@ -18,6 +19,9 @@ def get_stats():
 
         if not stats_data:
             return jsonify({"message": "No statistics available"}), 404
+
+        if isinstance(stats_data[0]['updated_at'], datetime):
+            stats_data[0]['updated_at'] = stats_data[0]['updated_at'].strftime("%d-%m-%y %H:%M")
 
         return jsonify(stats_data[0]), 200
 
