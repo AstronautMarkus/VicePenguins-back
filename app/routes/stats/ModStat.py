@@ -10,7 +10,7 @@ def save_stats():
         db = MySQLConnection()
 
         total_mods = db.execute_query("SELECT COUNT(*) AS count FROM mod_posts")[0]['count']
-        users_active = db.execute_query("SELECT COUNT(DISTINCT author_id) AS count FROM mod_posts")[0]['count']
+        users_active = db.execute_query("SELECT COUNT(DISTINCT username) AS count FROM users")[0]['count']
         total_views = db.execute_query("SELECT SUM(views) AS total FROM mod_posts")[0]['total'] or 0
 
         in_review_status_id = db.execute_query("SELECT id FROM statuses WHERE name = 'in_review'")[0]['id']
