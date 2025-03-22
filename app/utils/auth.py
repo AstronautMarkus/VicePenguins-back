@@ -4,7 +4,7 @@ from flask import request, jsonify
 from app.config import Config
 from app.utils.db_connection import MySQLConnection
 
-def role_required(allowed_roles):
+def role_required(min_role):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -30,7 +30,7 @@ def role_required(allowed_roles):
 
                 user_role = user_data[0]['role_id']
                 
-                if user_role not in allowed_roles:
+                if user_role < min_role:
                     return jsonify({'error': 'Unauthorized access'}), 403
 
                 request.user = {
