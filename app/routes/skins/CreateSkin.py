@@ -21,6 +21,16 @@ def create_skin():
     if not user_id:
         return jsonify({"error": "Missing user_id"}), 400
 
+    skin_type_id = request.form.get('skin_type_id')
+    if not skin_type_id:
+        return jsonify({"error": "Missing skin_type_id"}), 400
+    try:
+        skin_type_id = int(skin_type_id)
+        if skin_type_id not in [1, 2]:
+            return jsonify({"error": "Invalid skin_type_id, only 1 and 2 are allowed"}), 400
+    except ValueError:
+        return jsonify({"error": "skin_type_id must be an integer"}), 400
+
     if 'file' not in request.files:
         return jsonify({"error": "No file part in the request"}), 400
 
@@ -38,11 +48,11 @@ def create_skin():
 
         db = MySQLConnection()
         query = """
-            INSERT INTO skins (name, filename, author_id, created_at) 
-            VALUES (%s, %s, %s, NOW())
+            INSERT INTO skins (name, filename, author_id, skin_type_id, created_at) 
+            VALUES (%s, %s, %s, %s, NOW())
         """
         try:
-            db.execute_query(query, (request.form.get('name'), filename, user_id))
+            db.execute_query(query, (request.form.get('name'), filename, user_id, skin_type_id))
             return jsonify({"message": "Skin created successfully"}), 201
         except Exception as e:
             return jsonify({"error": f"Database error: {str(e)}"}), 500
