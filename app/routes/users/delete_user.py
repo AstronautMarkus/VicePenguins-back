@@ -4,7 +4,7 @@ from app.utils.db_connection import MySQLConnection
 from app.utils.auth import role_required
 
 @users.route('/<int:user_id>', methods=['DELETE'])
-@role_required([3])
+@role_required(3)
 def delete_user(user_id):
     db = MySQLConnection()
     try:

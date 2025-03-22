@@ -5,7 +5,7 @@ from app.utils.auth import role_required
 from datetime import datetime
 
 @stats.route('/', methods=['GET'])
-@role_required([3])
+@role_required(3)
 def get_stats():
     try:
         db = MySQLConnection()

@@ -5,7 +5,7 @@ from app.utils.db_connection import MySQLConnection
 from app.utils.auth import role_required
 
 @users.route('/create_mod', methods=['POST'])
-@role_required([3])
+@role_required(3)
 def create_mod():
     db = MySQLConnection()
     try:

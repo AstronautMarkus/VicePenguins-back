@@ -1,8 +1,10 @@
 from flask import jsonify
 from . import skins
 from app.utils.db_connection import MySQLConnection
+from app.utils.auth import role_required
 
 @skins.route('/', methods=['GET'])
+@role_required(1)
 def get_skins():
     db = MySQLConnection()
     query = """

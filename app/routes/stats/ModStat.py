@@ -4,7 +4,7 @@ from app.utils.db_connection import MySQLConnection
 from app.utils.auth import role_required
 
 @stats.route('/save_stats', methods=['POST'])
-@role_required([3])
+@role_required(3)
 def save_stats():
     try:
         db = MySQLConnection()

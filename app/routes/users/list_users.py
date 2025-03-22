@@ -4,7 +4,7 @@ from app.utils.db_connection import MySQLConnection
 from app.utils.auth import role_required
 
 @users.route('/')
-@role_required([3])
+@role_required(3)
 def list_users():
     db = MySQLConnection()
     try:

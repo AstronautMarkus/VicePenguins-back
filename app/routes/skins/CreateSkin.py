@@ -15,7 +15,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @skins.route('/create', methods=['POST'])
-@role_required([3])   
+@role_required(3)   
 def create_skin():
     user_id = request.form.get('user_id')
     if not user_id:
